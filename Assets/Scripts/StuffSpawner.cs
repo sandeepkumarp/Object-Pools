@@ -1,29 +1,39 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class StuffSpawner : MonoBehaviour
-{
+public class StuffSpawner : MonoBehaviour {
 
-	public float timeBetweenSpawns;
-	public Stuff[] stuffPrefabs;
-	float timeSinceLastSpawn;
+	public FloatRange timeBetweenSpawns, scale, randomVelocity, angularVelocity;
 
 	public float velocity;
 
-	void FixedUpdate ()
-	{
+	public Material stuffMaterial;
+
+	public Stuff[] stuffPrefabs;
+
+	float timeSinceLastSpawn;
+	float currentSpawnDelay;
+
+	void FixedUpdate () {
 		timeSinceLastSpawn += Time.deltaTime;
-		if (timeSinceLastSpawn >= timeBetweenSpawns) {
-			timeSinceLastSpawn -= timeBetweenSpawns;
-			SpawnStuff ();
+		if (timeSinceLastSpawn >= currentSpawnDelay) {
+			timeSinceLastSpawn -= currentSpawnDelay;
+			currentSpawnDelay = timeBetweenSpawns.RandomInRange;
+			SpawnStuff();
 		}
 	}
 
-	void SpawnStuff ()
-	{
-		Stuff prefab = stuffPrefabs [Random.Range (0, stuffPrefabs.Length)];
-		Stuff spawn = Instantiate<Stuff> (prefab);
+	void SpawnStuff () {
+		Stuff prefab = stuffPrefabs[Random.Range(0, stuffPrefabs.Length)];
+		Stuff spawn = Instantiate<Stuff>(prefab);
 		spawn.transform.localPosition = transform.position;
-		spawn.Body.velocity = transform.up * velocity;
+		spawn.transform.localScale = Vector3.one * scale.RandomInRange;
+		spawn.transform.localRotation = Random.rotation;
+
+		spawn.Body.velocity = transform.up * velocity +
+			Random.onUnitSphere * randomVelocity.RandomInRange;
+		spawn.Body.angularVelocity =
+			Random.onUnitSphere * angularVelocity.RandomInRange;
+
+		spawn.SetMaterial(stuffMaterial);
 	}
 }

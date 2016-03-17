@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Stuff : MonoBehaviour
-{
+public class Stuff : MonoBehaviour {
 
-    public Rigidbody Body { get; private set; }
+	public Rigidbody Body { get; private set; }
 
-    void Awake()
-    {
-        Body = GetComponent<Rigidbody>();
-    }
+	MeshRenderer[] meshRenderers;
 
-    void OnTriggerEnter(Collider enteredCollider)
-    {
-        if (enteredCollider.CompareTag("Kill Zone"))
-        {
-            Destroy(gameObject);
-        }
-    }
+	public void SetMaterial (Material m) {
+		for (int i = 0; i < meshRenderers.Length; i++) {
+			meshRenderers[i].material = m;
+		}
+	}
 
+	void Awake () {
+		Body = GetComponent<Rigidbody>();
+		meshRenderers = GetComponentsInChildren<MeshRenderer>();
+	}
+
+	void OnTriggerEnter (Collider enteredCollider) {
+		if (enteredCollider.CompareTag("Kill Zone")) {
+			Destroy(gameObject);
+		}
+	}
 }
