@@ -23,4 +23,8 @@ public class Stuff : PooledObject {
 			ReturnToPool();
 		}
 	}
+
+	void OnLevelWasLoaded () {
+		ReturnToPool();
+	}
 }
